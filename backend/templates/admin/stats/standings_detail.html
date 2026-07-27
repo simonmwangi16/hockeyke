@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ title }}</h3>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Team</th>
+                    <th>P</th>
+                    <th>W</th>
+                    <th>D</th>
+                    <th>L</th>
+                    <th>GF</th>
+                    <th>GA</th>
+                    <th>GD</th>
+                    <th>Pts</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in standings %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ row.team }}</td>
+                    <td>{{ row.played }}</td>
+                    <td>{{ row.won }}</td>
+                    <td>{{ row.drawn }}</td>
+                    <td>{{ row.lost }}</td>
+                    <td>{{ row.goals_for }}</td>
+                    <td>{{ row.goals_against }}</td>
+                    <td>{{ row.goal_difference }}</td>
+                    <td><strong>{{ row.points }}</strong></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">No completed matches yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="../.." class="btn btn-secondary">Back</a>
+    </div>
+</div>
+{% endblock %}

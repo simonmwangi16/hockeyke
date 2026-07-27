@@ -1,0 +1,43 @@
+{% extends "admin/change_list.html" %}
+
+{% block result_list %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Select League Season</h3>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Season</th>
+                    <th>League</th>
+                    <th>Gender</th>
+                    <th>Zone</th>
+                    <th>Standings</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for league_season in league_seasons %}
+                <tr>
+                    <td>{{ league_season.season }}</td>
+                    <td>{{ league_season.league.name }}</td>
+                    <td>{{ league_season.league.get_gender_display }}</td>
+                    <td>{{ league_season.league.zone|default:"-" }}</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary"
+                           href="league-season/{{ league_season.id }}/">
+                            View standings
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No league seasons found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
