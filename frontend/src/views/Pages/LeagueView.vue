@@ -12,7 +12,9 @@
       </div>
 
       <!-- Tabs -->
-      <div class="border-b border-gray-200 dark:border-gray-800">
+      <div
+        class="sticky top-[60px] z-30 -mx-5 border-b border-gray-200 bg-white/95 px-1 backdrop-blur before:absolute before:inset-x-0 before:-top-2 before:h-2 before:bg-white/95 dark:border-gray-800 dark:bg-gray-900/95 dark:before:bg-gray-900/95 lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:backdrop-blur-none lg:before:hidden lg:dark:bg-transparent"
+      >
         <nav class="flex gap-2 overflow-x-auto">
           <button
             v-for="tab in tabs"
@@ -29,6 +31,8 @@
           </button>
         </nav>
       </div>
+
+      <AdSenseUnit class="my-6" :slot-id="leagueAdSlotId" />
 
       <!-- Tab Content -->
       <div class="mt-6">
@@ -63,17 +67,19 @@
   </AdminLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import AdminLayout from "@/components/layout/AdminLayout.vue";
+import AdSenseUnit from "@/components/ads/AdSenseUnit.vue";
 import LeagueTableTab from "@/components/league/LeagueTableTab.vue";
 import LeagueFixturesTab from "@/components/league/LeagueFixturesTab.vue";
 import LeagueStatsTab from "@/components/league/LeagueStatsTab.vue";
 
 const route = useRoute();
 const router = useRouter();
+const leagueAdSlotId = import.meta.env.VITE_ADSENSE_LEAGUE_SLOT?.trim() || "";
 
 const tabs = [
   { id: "table", label: "League Table" },

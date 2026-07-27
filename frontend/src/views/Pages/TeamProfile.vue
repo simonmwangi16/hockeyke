@@ -26,26 +26,33 @@
             </div>
           </div>
 
-          <!-- Tabs -->
-          <div
-            class="mt-6 flex flex-wrap gap-6 border-b border-gray-200 dark:border-gray-800"
-          >
-            <button
-              v-for="tab in tabs"
-              :key="tab.key"
-              @click="activeTab = tab.key"
-              class="pb-3 text-sm font-medium transition-colors"
-              :class="
-                activeTab === tab.key
-                  ? 'border-b-2 border-brand-500 text-brand-500'
-                  : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-              "
-            >
-              {{ tab.label }}
-            </button>
-          </div>
         </template>
       </div>
+
+      <!-- Tabs -->
+      <div
+        v-if="team"
+        class="sticky top-[60px] z-30 -mx-5 border-b border-gray-200 bg-white/95 px-1 backdrop-blur before:absolute before:inset-x-0 before:-top-6 before:h-6 before:bg-white/95 dark:border-gray-800 dark:bg-gray-900/95 dark:before:bg-gray-900/95 lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:backdrop-blur-none lg:before:hidden lg:dark:bg-transparent"
+      >
+        <nav class="flex gap-2 overflow-x-auto" aria-label="Team profile sections">
+          <button
+            v-for="tab in tabs"
+            :key="tab.key"
+            type="button"
+            @click="activeTab = tab.key"
+            class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors"
+            :class="
+              activeTab === tab.key
+                ? 'border-brand-500 text-brand-500'
+                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+            "
+          >
+            {{ tab.label }}
+          </button>
+        </nav>
+      </div>
+
+      <AdSenseUnit :slot-id="teamAdSlotId" />
 
       <!-- Overview -->
       <TeamOverviewTab
@@ -74,12 +81,12 @@
   </AdminLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import AdminLayout from "@/components/layout/AdminLayout.vue";
-import PageBreadcrumb from "@/components/common/PageBreadcrumb.vue";
+import AdSenseUnit from "@/components/ads/AdSenseUnit.vue";
 
 import TeamOverviewTab from "@/components/teams/TeamOverviewTab.vue";
 import TeamTableTab from "@/components/teams/TeamTableTab.vue";
@@ -89,6 +96,7 @@ import TeamStatsTab from "@/components/teams/TeamStatsTab.vue";
 import { getTeamOverview } from "@/services/teamApi";
 
 const route = useRoute();
+const teamAdSlotId = import.meta.env.VITE_ADSENSE_TEAM_SLOT?.trim() || "";
 
 const teamId = computed(() => route.params.teamId);
 
