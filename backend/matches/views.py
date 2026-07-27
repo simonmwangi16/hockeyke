@@ -118,6 +118,55 @@ def serialize_match(match):
     }
 
 
+def serialize_home_match(match):
+    data = serialize_match(match)
+    league = match.league_season.league
+    competition = league.name
+    if league.zone:
+        competition = f"{competition} · {league.zone}"
+
+    data.update({
+        "competition": competition,
+        "gender": league.get_gender_display(),
+        "season": match.league_season.season.name,
+    })
+    return data
+
+
+@api_view(["GET"])
+def home_match_feed(request):
+    season = request.GET.get("season", "").strip()
+    matches = Match.objects.filter(
+        match_date__isnull=False,
+    ).select_related(
+        "league_season__league",
+        "league_season__season",
+        "home_team",
+        "away_team",
+    )
+
+    if season:
+        matches = matches.filter(league_season__season__name=season)
+
+    upcoming = matches.filter(
+        status="SCHEDULED",
+        match_date__gte=date.today(),
+    ).order_by("match_date", "match_time", "id")[:3]
+
+    recent_results = matches.filter(
+        status="FT",
+        match_date__lte=date.today(),
+    ).order_by("-match_date", "-match_time", "-id")[:3]
+
+    return Response({
+        "season": season or None,
+        "upcoming": [serialize_home_match(match) for match in upcoming],
+        "recent_results": [
+            serialize_home_match(match) for match in recent_results
+        ],
+    })
+
+
 @api_view(["GET"])
 def matches(request):
     league_season, error_response = get_league_season(request)

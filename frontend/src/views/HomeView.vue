@@ -1,10 +1,10 @@
 <template>
   <AdminLayout>
-    <div class="space-y-8">
-      <section>
+    <div class="flex flex-col gap-8">
+      <section class="order-3">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           <template
-            v-for="(competition, competitionIndex) in competitions"
+            v-for="competition in competitions"
             :key="competition.slug"
           >
             <article
@@ -99,9 +99,139 @@
               </RouterLink>
             </div>
             </article>
-
-            <AdSenseUnit v-if="competitionIndex === 3" />
           </template>
+        </div>
+      </section>
+
+      <AdSenseUnit class="order-2" />
+
+      <section class="order-1" aria-label="Fixtures and results">
+        <div
+          v-if="feedLoading"
+          class="rounded-2xl border border-gray-200 bg-white px-5 py-8 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-white/[0.03]"
+        >
+          Loading fixtures and results...
+        </div>
+        <div
+          v-else-if="feedError"
+          class="rounded-2xl border border-gray-200 bg-white px-5 py-8 text-center dark:border-gray-800 dark:bg-white/[0.03]"
+        >
+          <p class="text-sm text-red-500">{{ feedError }}</p>
+          <button
+            type="button"
+            class="mt-2 text-sm font-semibold text-brand-500 hover:underline"
+            @click="fetchHomeFeed"
+          >
+            Try again
+          </button>
+        </div>
+        <div v-else class="grid gap-4 lg:grid-cols-2">
+          <article
+            class="flex flex-col rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+          >
+            <div class="border-b border-gray-200 pb-4 dark:border-gray-800">
+              <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+                Upcoming fixtures
+              </h2>
+            </div>
+
+            <div
+              v-if="upcomingMatches.length"
+              class="flex-1 divide-y divide-gray-100 dark:divide-gray-800"
+            >
+              <RouterLink
+                v-for="match in upcomingMatches"
+                :key="match.id"
+                :to="matchUrl(match)"
+                class="block py-4 transition hover:text-brand-500 focus:outline-hidden focus:ring-2 focus:ring-brand-500"
+              >
+                <span class="block truncate text-center text-xs text-gray-500 dark:text-gray-400">
+                  {{ match.competition }}
+                </span>
+                <span class="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                  <span class="truncate text-right text-sm font-semibold text-gray-900 dark:text-white">
+                    {{ match.home_short_name || match.home_team }}
+                  </span>
+                  <span class="rounded-lg bg-brand-50 px-3 py-2 text-sm font-bold text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                    {{ match.match_time || "TBC" }}
+                  </span>
+                  <span class="truncate text-left text-sm font-semibold text-gray-900 dark:text-white">
+                    {{ match.away_short_name || match.away_team }}
+                  </span>
+                </span>
+                <span class="mt-2 block text-center text-xs text-gray-500 dark:text-gray-400">
+                  {{ match.match_date }}
+                  <template v-if="match.venue"> · {{ match.venue }}</template>
+                </span>
+              </RouterLink>
+            </div>
+            <p v-else class="flex flex-1 items-center justify-center py-8 text-sm text-gray-500">
+              No upcoming fixtures are currently scheduled.
+            </p>
+
+            <RouterLink
+              to="/fixtures"
+              class="mt-2 border-t border-gray-200 pt-4 text-sm font-semibold text-brand-500 hover:underline dark:border-gray-800"
+            >
+              View all fixtures →
+            </RouterLink>
+          </article>
+
+          <article
+            class="flex flex-col rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+          >
+            <div class="border-b border-gray-200 pb-4 dark:border-gray-800">
+              <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+                Latest results
+              </h2>
+            </div>
+
+            <div
+              v-if="recentResults.length"
+              class="flex-1 divide-y divide-gray-100 dark:divide-gray-800"
+            >
+              <RouterLink
+                v-for="match in recentResults"
+                :key="match.id"
+                :to="matchUrl(match)"
+                class="block py-4 transition hover:text-brand-500 focus:outline-hidden focus:ring-2 focus:ring-brand-500"
+              >
+                <span class="block truncate text-center text-xs text-gray-500 dark:text-gray-400">
+                  {{ match.competition }}
+                </span>
+                <span class="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                  <span
+                    class="truncate text-right text-sm text-gray-900 dark:text-white"
+                    :class="resultTeamClass(match, 'home')"
+                  >
+                    {{ match.home_short_name || match.home_team }}
+                  </span>
+                  <span class="rounded-lg bg-gray-100 px-3 py-2 text-sm font-bold text-gray-900 dark:bg-gray-800 dark:text-white">
+                    {{ match.home_score }}–{{ match.away_score }}
+                  </span>
+                  <span
+                    class="truncate text-left text-sm text-gray-900 dark:text-white"
+                    :class="resultTeamClass(match, 'away')"
+                  >
+                    {{ match.away_short_name || match.away_team }}
+                  </span>
+                </span>
+                <span class="mt-2 block text-center text-xs text-gray-500 dark:text-gray-400">
+                  {{ match.match_date }}
+                </span>
+              </RouterLink>
+            </div>
+            <p v-else class="flex flex-1 items-center justify-center py-8 text-sm text-gray-500">
+              No completed results are available.
+            </p>
+
+            <RouterLink
+              to="/fixtures"
+              class="mt-2 border-t border-gray-200 pt-4 text-sm font-semibold text-brand-500 hover:underline dark:border-gray-800"
+            >
+              View all results →
+            </RouterLink>
+          </article>
         </div>
       </section>
     </div>
@@ -115,7 +245,7 @@ import { useRoute } from "vue-router";
 import AdSenseUnit from "@/components/ads/AdSenseUnit.vue";
 import AdminLayout from "@/components/layout/AdminLayout.vue";
 // @ts-expect-error The existing JavaScript API service has no declaration file.
-import { getLeagueStandings } from "@/services/leagueApi";
+import { getHomeMatchFeed, getLeagueStandings } from "@/services/leagueApi";
 // @ts-expect-error The existing JavaScript slug utility has no declaration file.
 import { makeTeamSlug } from "@/utils/slugs";
 
@@ -143,6 +273,21 @@ interface Standing {
   played: number;
   goal_difference: number;
   points: number;
+}
+
+interface HomeMatch {
+  id: number;
+  home_team: string;
+  away_team: string;
+  home_short_name: string;
+  away_short_name: string;
+  home_score: number;
+  away_score: number;
+  match_date: string;
+  match_time: string | null;
+  venue: string;
+  status: string;
+  competition: string;
 }
 
 const competitions: Competition[] = [
@@ -199,6 +344,21 @@ const competitions: Competition[] = [
 const standingsByLeague = ref<Record<string, Standing[]>>({});
 const loadingByLeague = ref<Record<string, boolean>>({});
 const errorsByLeague = ref<Record<string, string>>({});
+const upcomingMatches = ref<HomeMatch[]>([]);
+const recentResults = ref<HomeMatch[]>([]);
+const feedLoading = ref(false);
+const feedError = ref("");
+
+const matchUrl = (match: HomeMatch) =>
+  `/match/${match.id}/${makeTeamSlug(match.home_team)}-vs-${makeTeamSlug(match.away_team)}`;
+
+const resultTeamClass = (match: HomeMatch, side: "home" | "away") => {
+  if (match.home_score === match.away_score) return "font-semibold";
+
+  const homeWon = match.home_score > match.away_score;
+  const teamWon = side === "home" ? homeWon : !homeWon;
+  return teamWon ? "font-bold" : "font-semibold";
+};
 
 const fetchCompetitionStandings = async (competition: Competition) => {
   loadingByLeague.value[competition.slug] = true;
@@ -222,11 +382,31 @@ const fetchCompetitionStandings = async (competition: Competition) => {
   }
 };
 
+const fetchHomeFeed = async () => {
+  feedLoading.value = true;
+  feedError.value = "";
+
+  try {
+    const response = await getHomeMatchFeed({ season: season.value });
+    upcomingMatches.value = response.data.upcoming || [];
+    recentResults.value = response.data.recent_results || [];
+  } catch (requestError) {
+    console.error(requestError);
+    upcomingMatches.value = [];
+    recentResults.value = [];
+    feedError.value = "Unable to load fixtures and results.";
+  } finally {
+    feedLoading.value = false;
+  }
+};
+
 onMounted(() => {
   competitions.forEach(fetchCompetitionStandings);
+  fetchHomeFeed();
 });
 
 watch(season, () => {
   competitions.forEach(fetchCompetitionStandings);
+  fetchHomeFeed();
 });
 </script>

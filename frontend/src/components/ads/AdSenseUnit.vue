@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted } from "vue";
+import { computed, nextTick, onMounted } from "vue";
 
 defineOptions({
   name: "AdSenseUnit",
@@ -31,9 +31,15 @@ declare global {
   }
 }
 
+const props = defineProps<{
+  slotId?: string;
+}>();
+
 const clientId = import.meta.env.VITE_ADSENSE_CLIENT_ID?.trim() || "";
-const slotId = import.meta.env.VITE_ADSENSE_HOME_SLOT?.trim() || "";
-const isConfigured = Boolean(clientId && slotId);
+const slotId = computed(
+  () => props.slotId?.trim() || import.meta.env.VITE_ADSENSE_HOME_SLOT?.trim() || "",
+);
+const isConfigured = computed(() => Boolean(clientId && slotId.value));
 
 const loadAdSenseScript = () => {
   const existingScript = document.querySelector<HTMLScriptElement>(
@@ -59,7 +65,7 @@ const loadAdSenseScript = () => {
 };
 
 const initializeAd = async () => {
-  if (!isConfigured) return;
+  if (!isConfigured.value) return;
 
   try {
     await loadAdSenseScript();

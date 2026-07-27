@@ -8,8 +8,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Ecommerce',
-      component: () => import('../views/Ecommerce.vue'),
+      name: 'Home',
+      component: () => import('../views/HomeView.vue'),
       meta: {
         title: 'Kenya Hockey Fixtures, Results & Standings',
       },

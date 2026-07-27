@@ -4,17 +4,18 @@
   >
     <div class="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
       <div
-        class="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4"
+        class="relative flex items-center justify-center w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4"
       >
         <button
           @click="handleToggle"
-          class="flex items-center justify-center w-10 h-10 text-gray-500 border-gray-200 rounded-lg z-99999 dark:border-gray-800 dark:text-gray-400 lg:h-11 lg:w-11 lg:border"
+          class="absolute left-3 flex h-10 items-center justify-center gap-1.5 rounded-lg px-2 text-gray-500 z-99999 dark:border-gray-800 dark:text-gray-400 lg:static lg:h-11 lg:w-11 lg:border lg:px-0"
           :class="[
             isMobileOpen
               ? 'lg:bg-transparent dark:lg:bg-transparent bg-gray-100 dark:bg-gray-800'
               : '',
           ]"
         >
+          <span class="text-xs font-semibold lg:hidden">MENU</span>
           <svg
             v-if="isMobileOpen"
             class="fill-current"
@@ -50,7 +51,7 @@
         <HeaderLogo />
         <button
           @click="toggleApplicationMenu"
-          class="flex items-center justify-center w-10 h-10 text-gray-700 rounded-lg z-99999 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
+          class="hidden"
         >
           <svg
             width="24"

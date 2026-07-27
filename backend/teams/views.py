@@ -202,7 +202,7 @@ def team_matches(request, team_id):
     ).select_related(
         "home_team",
         "away_team",
-    ).order_by("match_date", "match_time")
+    ).order_by("-match_date", "-match_time", "-id")
 
     return Response({
         "team_id": team.id,

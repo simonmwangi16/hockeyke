@@ -18,6 +18,10 @@ export const getLeagueSeasonStats = (params) => {
   return api.get("/stats/season/", { params });
 };
 
+export const getHomeMatchFeed = (params) => {
+  return api.get("/matches/home-feed/", { params });
+};
+
 export const getMatchDetail = (matchId) => {
   return api.get(`/matches/${matchId}/`);
 };
