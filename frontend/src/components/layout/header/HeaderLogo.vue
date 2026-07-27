@@ -1,7 +1,15 @@
 <template>
   <router-link to="/" class="lg:hidden">
-    <img class="dark:hidden" src="/images/logo/hke-logo-horizontal.png" alt="Logo" width="150" height="40" />
-    <img class="hidden dark:block" src="/images/logo/hke-logo-horizontal.png" alt="Logo" />
+    <img
+      class="h-auto w-[110px] dark:hidden"
+      src="/images/logo/hke-logo-horizontal.png"
+      alt="HockeyKE"
+    />
+    <img
+      class="hidden h-auto w-[110px] dark:block"
+      src="/images/logo/hke-logo-horizontal.png"
+      alt="HockeyKE"
+    />
   </router-link>
 </template>
 

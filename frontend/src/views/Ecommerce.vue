@@ -109,7 +109,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 
 import AdSenseUnit from "@/components/ads/AdSenseUnit.vue";
 import AdminLayout from "@/components/layout/AdminLayout.vue";
@@ -118,7 +119,10 @@ import { getLeagueStandings } from "@/services/leagueApi";
 // @ts-expect-error The existing JavaScript slug utility has no declaration file.
 import { makeTeamSlug } from "@/utils/slugs";
 
-const season = "2026";
+const route = useRoute();
+const season = computed(() =>
+  typeof route.query.season === "string" ? route.query.season : "2026",
+);
 
 defineOptions({
   name: "HockeyHomePage",
@@ -203,7 +207,7 @@ const fetchCompetitionStandings = async (competition: Competition) => {
   try {
     const response = await getLeagueStandings({
       league: competition.slug,
-      season,
+      season: season.value,
     });
 
     standingsByLeague.value[competition.slug] = (
@@ -219,6 +223,10 @@ const fetchCompetitionStandings = async (competition: Competition) => {
 };
 
 onMounted(() => {
+  competitions.forEach(fetchCompetitionStandings);
+});
+
+watch(season, () => {
   competitions.forEach(fetchCompetitionStandings);
 });
 </script>
