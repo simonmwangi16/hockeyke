@@ -96,13 +96,13 @@ watch(
   }
 );
 
-const cleanLabel = (value) => {
+const cleanLabel = (value: string | string[] | undefined) => {
   if (!value) return "";
 
   return value
     .toString()
-    .replaceAll("-", " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char: string) => char.toUpperCase());
 };
 
 const leagueTitle = computed(() => {
@@ -113,7 +113,7 @@ const leagueTitle = computed(() => {
   return [competition, gender, division].filter(Boolean).join(" - ");
 });
 
-const changeTab = (tabId) => {
+const changeTab = (tabId: string) => {
   router.replace({
     path: route.path,
     query: {
@@ -149,6 +149,8 @@ const leagueSlug = computed(() => {
 
 const leagueParams = computed(() => ({
   league: leagueSlug.value,
-  season: route.query.season || "2026",
+  season: Array.isArray(route.query.season)
+    ? route.query.season[0] || "2026"
+    : route.query.season || "2026",
 }));
 </script>

@@ -4,7 +4,7 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.utils.dateparse import parse_datetime
 
-from teams.models import Team
+from teams.models import Team, TeamLeagueSeason
 from competitions.models import LeagueSeason
 from matches.models import Match
 
@@ -143,6 +143,15 @@ class Command(BaseCommand):
                     if dry_run:
                         checked += 1
                         continue
+
+                    TeamLeagueSeason.objects.get_or_create(
+                        team=home_team,
+                        league_season=league_season,
+                    )
+                    TeamLeagueSeason.objects.get_or_create(
+                        team=away_team,
+                        league_season=league_season,
+                    )
 
                     obj, was_created = Match.objects.update_or_create(
                         league_season=league_season,

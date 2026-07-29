@@ -205,6 +205,14 @@ def matches(request):
                 status="FT",
             ).order_by("-match_date", "-match_time").first()
 
+            # Imported schedules can contain past fixtures whose results have
+            # not yet been confirmed. Keep the competition browsable instead
+            # of returning an empty response solely because none are marked FT.
+            if not latest_match:
+                latest_match = base_queryset.filter(
+                    match_date__isnull=False,
+                ).order_by("-match_date", "-match_time").first()
+
             if latest_match:
                 year = latest_match.match_date.year
                 month = latest_match.match_date.month

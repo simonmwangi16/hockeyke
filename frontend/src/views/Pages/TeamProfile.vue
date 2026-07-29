@@ -83,7 +83,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import AdminLayout from "@/components/layout/AdminLayout.vue";
 import AdSenseUnit from "@/components/ads/AdSenseUnit.vue";
@@ -93,16 +93,32 @@ import TeamTableTab from "@/components/teams/TeamTableTab.vue";
 import TeamFixturesTab from "@/components/teams/TeamFixturesTab.vue";
 import TeamStatsTab from "@/components/teams/TeamStatsTab.vue";
 
+// @ts-expect-error The existing JavaScript API service has no declaration file.
 import { getTeamOverview } from "@/services/teamApi";
+// @ts-expect-error The existing JavaScript slug utility has no declaration file.
+import { makeTeamSlug } from "@/utils/slugs";
 
 const route = useRoute();
+const router = useRouter();
 const teamAdSlotId = import.meta.env.VITE_ADSENSE_TEAM_SLOT?.trim() || "";
+
+interface TeamSummary {
+  name: string;
+}
+
+interface TeamOverview {
+  team: TeamSummary;
+  league_season?: {
+    league?: string;
+    season?: string;
+  };
+}
 
 const teamId = computed(() => route.params.teamId);
 
 const loading = ref(false);
-const overview = ref(null);
-const team = ref(null);
+const overview = ref<TeamOverview | null>(null);
+const team = ref<TeamSummary | null>(null);
 
 const activeTab = ref("overview");
 
@@ -113,6 +129,22 @@ const tabs = [
   { key: "stats", label: "Stats" },
 ];
 
+const ensureCanonicalTeamUrl = (teamName: string) => {
+  const canonicalSlug = makeTeamSlug(teamName);
+
+  if (route.params.teamSlug === canonicalSlug) return;
+
+  router.replace({
+    name: "TeamProfile",
+    params: {
+      ...route.params,
+      teamSlug: canonicalSlug,
+    },
+    query: route.query,
+    hash: route.hash,
+  });
+};
+
 const fetchTeam = async () => {
   loading.value = true;
 
@@ -121,6 +153,7 @@ const fetchTeam = async () => {
 
     overview.value = response.data;
     team.value = response.data.team;
+    ensureCanonicalTeamUrl(response.data.team.name);
   } catch (error) {
     console.error(error);
   } finally {
@@ -137,6 +170,13 @@ watch(
     team.value = null;
     activeTab.value = "overview";
     fetchTeam();
+  }
+);
+
+watch(
+  () => route.params.teamSlug,
+  () => {
+    if (team.value) ensureCanonicalTeamUrl(team.value.name);
   }
 );
 </script>

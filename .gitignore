@@ -13,6 +13,7 @@ staticfiles/
 # Environment
 .env
 .env.*
+!.env.example
 
 # Vue
 node_modules/
@@ -24,3 +25,6 @@ dist/
 # OS
 Thumbs.db
 .DS_Store
+
+# Microsoft Office temporary lock files
+~$*

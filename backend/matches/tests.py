@@ -77,3 +77,51 @@ class HomeMatchFeedTests(TestCase):
         self.assertTrue(
             all(match["status"] == "FT" for match in data["recent_results"])
         )
+
+
+class LeagueMatchesTests(TestCase):
+    def test_uses_latest_dated_month_when_only_past_scheduled_matches_exist(self):
+        season = Season.objects.create(name="2026")
+        league = League.objects.create(
+            name="Super League",
+            short_name="SLM",
+            gender="MEN",
+        )
+        league_season = LeagueSeason.objects.create(
+            league=league,
+            season=season,
+        )
+        home_team = Team.objects.create(name="Parkroad Badgers", gender="MEN")
+        away_team = Team.objects.create(name="Parkroad Tigers", gender="MEN")
+        latest_date = date.today() - timedelta(days=10)
+
+        latest_match = Match.objects.create(
+            league_season=league_season,
+            home_team=home_team,
+            away_team=away_team,
+            match_date=latest_date,
+            status="SCHEDULED",
+        )
+        Match.objects.create(
+            league_season=league_season,
+            home_team=away_team,
+            away_team=home_team,
+            match_date=date.today() - timedelta(days=45),
+            status="SCHEDULED",
+        )
+
+        response = self.client.get(
+            reverse("matches"),
+            {
+                "league": "super-league-men",
+                "season": "2026",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["year"], latest_date.year)
+        self.assertEqual(response.json()["month"], latest_date.month)
+        self.assertIn(
+            latest_match.id,
+            [match["id"] for match in response.json()["matches"]],
+        )

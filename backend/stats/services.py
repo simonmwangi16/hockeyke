@@ -19,11 +19,18 @@ def empty_row(team):
 def calculate_standings(league_season):
     table = {}
 
+    # Explicit memberships are the source of truth for teams that belong to a
+    # competition but do not have a fixture yet.
+    memberships = league_season.team_memberships.select_related("team")
+    for membership in memberships:
+        table[membership.team_id] = empty_row(membership.team)
+
     all_matches = Match.objects.filter(
         league_season=league_season,
     ).select_related("home_team", "away_team")
 
-    # Add all teams from fixtures first
+    # Preserve historical compatibility for seasons whose participation was
+    # recorded only through fixtures.
     for match in all_matches:
         table.setdefault(match.home_team.id, empty_row(match.home_team))
         table.setdefault(match.away_team.id, empty_row(match.away_team))

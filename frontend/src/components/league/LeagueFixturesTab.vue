@@ -112,29 +112,44 @@
                 </div>
               </router-link>
       </div>
-        
+
+      <FixtureDisclaimer
+        v-if="fixtures.some((match) => match.status === 'SCHEDULED')"
+      />
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import FixtureDisclaimer from "@/components/league/FixtureDisclaimer.vue";
+// @ts-expect-error The existing JavaScript API service has no declaration file.
 import { getLeagueFixtures } from "@/services/leagueApi";
+// @ts-expect-error The existing JavaScript slug utility has no declaration file.
 import { makeMatchSlug } from "@/utils/slugs";
 
-const props = defineProps({
-  leagueParams: {
-    type: Object,
-    required: true,
-  },
-});
+interface Fixture {
+  id: number;
+  home_team: string;
+  away_team: string;
+  home_score: number;
+  away_score: number;
+  match_date: string;
+  match_time: string | null;
+  venue: string;
+  status: "SCHEDULED" | "LIVE" | "FT" | "POSTPONED" | "CANCELLED";
+}
 
-const fixtures = ref([]);
+const props = defineProps<{
+  leagueParams: Record<string, string | number | undefined>;
+}>();
+
+const fixtures = ref<Fixture[]>([]);
 const loading = ref(false);
 const error = ref("");
 
-const selectedYear = ref(null);
-const selectedMonth = ref(null);
+const selectedYear = ref<number | null>(null);
+const selectedMonth = ref<number | null>(null);
 
 const monthLabel = computed(() => {
   if (!selectedYear.value || !selectedMonth.value) return "Fixtures";
@@ -175,7 +190,7 @@ const fetchFixtures = async () => {
 };
 
 const groupedFixtures = computed(() => {
-  return fixtures.value.reduce((groups, match) => {
+  return fixtures.value.reduce<Record<string, Fixture[]>>((groups, match) => {
     const date = match.match_date;
 
     if (!groups[date]) {
@@ -188,6 +203,8 @@ const groupedFixtures = computed(() => {
 });
 
 const previousMonth = () => {
+  if (selectedYear.value === null || selectedMonth.value === null) return;
+
   const date = new Date(selectedYear.value, selectedMonth.value - 2, 1);
 
   selectedYear.value = date.getFullYear();
@@ -197,6 +214,8 @@ const previousMonth = () => {
 };
 
 const nextMonth = () => {
+  if (selectedYear.value === null || selectedMonth.value === null) return;
+
   const date = new Date(selectedYear.value, selectedMonth.value, 1);
 
   selectedYear.value = date.getFullYear();

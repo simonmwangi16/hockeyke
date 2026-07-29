@@ -216,36 +216,44 @@
   </aside>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
+import type { Component } from "vue";
 import { useRoute } from "vue-router";
 
 import {
   HomeIcon,
-  GridIcon,
-  CalenderIcon,
-  UserCircleIcon,
-  ChatIcon,
-  MailIcon,
-  DocsIcon,
-  PieChartIcon,
   ChevronDownIcon,
   HorizontalDots,
-  PageIcon,
-  TableIcon,
-  ListIcon,
-  PlugInIcon,
 } from "../../icons";
-import BoxCubeIcon from "@/icons/BoxCubeIcon.vue";
 import { useSidebar } from "@/composables/useSidebar";
-import FlagIcon from "@/icons/FlagIcon.vue";
 import Flag2Icon from "@/icons/Flag2Icon.vue";
 
 const route = useRoute();
 
 const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
 
-const menuGroups = [
+interface SubMenuItem {
+  name: string;
+  path: string;
+  pro?: boolean;
+  new?: boolean;
+}
+
+interface MenuItem {
+  icon: Component;
+  iconClass?: string;
+  name: string;
+  path: string;
+  subItems?: SubMenuItem[];
+}
+
+interface MenuGroup {
+  title?: string;
+  items: MenuItem[];
+}
+
+const menuGroups: MenuGroup[] = [
   {
     items: [
       {
@@ -277,6 +285,7 @@ const menuGroups = [
         icon: Flag2Icon,
         iconClass: "text-green-700",
         name: "National League",
+        path: "",
         subItems: [
             {
               name: "Eastern Zone",
@@ -318,77 +327,11 @@ const menuGroups = [
       ],
     },
 
-  {
-    title: "Others",
-    items: [
-      {
-        icon: CalenderIcon,
-        name: "Fixtures",
-        path: "/fixtures",
-      },
-      
-      {
-        name: "League Table",
-        icon: TableIcon,
-        path: "/basic-tables",
-      },
-      {
-        icon: UserCircleIcon,
-        name: "User Profile",
-        path: "/profile",
-      },
-
-      {
-        name: "Forms",
-        icon: ListIcon,
-        subItems: [
-          { name: "Form Elements", path: "/form-elements", pro: false },
-        ],
-      },
-      {
-        name: "Pages",
-        icon: PageIcon,
-        subItems: [
-          { name: "Black Page", path: "/blank", pro: false },
-          { name: "404 Page", path: "/error-404", pro: false },
-        ],
-      },
-      {
-        icon: PieChartIcon,
-        name: "Charts",
-        subItems: [
-          { name: "Line Chart", path: "/line-chart", pro: false },
-          { name: "Bar Chart", path: "/bar-chart", pro: false },
-        ],
-      },
-      {
-        icon: BoxCubeIcon,
-        name: "Ui Elements",
-        subItems: [
-          { name: "Alerts", path: "/alerts", pro: false },
-          { name: "Avatars", path: "/avatars", pro: false },
-          { name: "Badge", path: "/badge", pro: false },
-          { name: "Buttons", path: "/buttons", pro: false },
-          { name: "Images", path: "/images", pro: false },
-          { name: "Videos", path: "/videos", pro: false },
-        ],
-      },
-      {
-        icon: PlugInIcon,
-        name: "Authentication",
-        subItems: [
-          { name: "Signin", path: "/signin", pro: false },
-          { name: "Signup", path: "/signup", pro: false },
-        ],
-      },
-      // ... Add other menu items here
-    ],
-  },
 ];
 
-const isActive = (path) => route.path === path;
+const isActive = (path: string) => route.path === path;
 
-const toggleSubmenu = (groupIndex, itemIndex) => {
+const toggleSubmenu = (groupIndex: number, itemIndex: number) => {
   const key = `${groupIndex}-${itemIndex}`;
   openSubmenu.value = openSubmenu.value === key ? null : key;
 };
@@ -402,7 +345,7 @@ const isAnySubmenuRouteActive = computed(() => {
   );
 });
 
-const isSubmenuOpen = (groupIndex, itemIndex) => {
+const isSubmenuOpen = (groupIndex: number, itemIndex: number) => {
   const key = `${groupIndex}-${itemIndex}`;
   return (
     openSubmenu.value === key ||
@@ -413,15 +356,17 @@ const isSubmenuOpen = (groupIndex, itemIndex) => {
   );
 };
 
-const startTransition = (el) => {
+const startTransition = (element: Element) => {
+  const el = element as HTMLElement;
   el.style.height = "auto";
   const height = el.scrollHeight;
   el.style.height = "0px";
-  el.offsetHeight; // force reflow
+  void el.offsetHeight; // force reflow
   el.style.height = height + "px";
 };
 
-const endTransition = (el) => {
+const endTransition = (element: Element) => {
+  const el = element as HTMLElement;
   el.style.height = "";
 };
 </script>

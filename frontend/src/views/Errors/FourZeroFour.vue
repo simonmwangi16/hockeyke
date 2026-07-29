@@ -5,6 +5,14 @@
     <common-grid-shape />
     <!-- Centered Content -->
     <div class="mx-auto w-full max-w-[242px] text-center sm:max-w-[472px]">
+      <router-link to="/" class="mb-8 inline-flex" aria-label="HockeyKE home">
+        <img
+          src="/images/logo/hke-logo-horizontal.png"
+          alt="HockeyKE"
+          class="h-auto w-[150px]"
+        />
+      </router-link>
+
       <h1
         class="mb-8 font-bold text-gray-800 text-title-md dark:text-white/90 xl:text-title-2xl"
       >
@@ -35,12 +43,12 @@
     <p
       class="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400"
     >
-      &copy; {{ currentYear }} - TailAdmin
+      &copy; {{ currentYear }} HockeyKE
     </p>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import CommonGridShape from "../../components/common/CommonGridShape.vue";
 

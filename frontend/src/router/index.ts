@@ -184,6 +184,10 @@ const router = createRouter({
         title: 'Create an Account',
       },
     },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/error-404',
+    },
   ],
 })
 

@@ -6,7 +6,7 @@ from django.db import transaction
 from django.db.models import Q
 
 from competitions.models import Season, League, LeagueSeason
-from teams.models import Team
+from teams.models import Team, TeamLeagueSeason
 from matches.models import Match
 
 
@@ -172,6 +172,15 @@ class Command(BaseCommand):
 
                 home_team = self.get_team(home_name, row_number, "Home", league)
                 away_team = self.get_team(away_name, row_number, "Away", league)
+
+                TeamLeagueSeason.objects.get_or_create(
+                    team=home_team,
+                    league_season=league_season,
+                )
+                TeamLeagueSeason.objects.get_or_create(
+                    team=away_team,
+                    league_season=league_season,
+                )
 
                 match_date, status = self.normalise_date_and_status(match_date_raw, row_number)
                 match_time = self.normalise_time(match_time_raw)

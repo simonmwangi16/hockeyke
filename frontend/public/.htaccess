@@ -1,0 +1,11 @@
+Options -MultiViews
+
+RewriteEngine On
+
+# Serve existing assets and directories normally.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Let Vue Router handle application URLs, including its 404 route.
+RewriteRule ^ index.html [L]
