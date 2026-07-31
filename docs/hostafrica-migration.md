@@ -134,17 +134,12 @@ Requirements:
 
 ## Prepare backend dependencies
 
-The repository currently needs a reviewed, version-pinned Python dependency manifest before server deployment. Do not improvise dependencies on the production server and do not blindly freeze unrelated packages.
+The repository now includes `backend/requirements.txt`, containing the pinned
+direct dependencies verified from the backend imports and working environment.
+Follow the operational instructions in `docs/hostafrica-live-setup.md`.
 
-Before uploading the backend:
-
-1. Inspect the backend imports and the known working local environment.
-2. Create a minimal dependency manifest using versions compatible with the repository.
-3. Review MySQL driver compatibility with HOSTAFRICA.
-4. Run the backend checks and tests locally.
-5. Commit the reviewed manifest separately.
-
-Once that manifest exists, activate the virtual environment command shown by cPanel and install it:
+After uploading the backend, activate the virtual environment command shown by
+cPanel and install the manifest:
 
 ```bash
 pip install -r requirements.txt
@@ -326,7 +321,7 @@ and never to `127.0.0.1`, `localhost`, or the old host.
 1. Confirm the domain and create the API subdomain.
 2. Enable SSL.
 3. Create the MySQL database and restricted user.
-4. Prepare and review the missing Python dependency manifest locally.
+4. Review the pinned Python dependency manifest locally.
 5. Confirm the Django static-file serving strategy.
 6. Create the cPanel Python application outside `public_html`.
 7. Configure production environment variables.

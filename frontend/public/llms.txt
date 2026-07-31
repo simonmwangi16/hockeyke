@@ -1,0 +1,30 @@
+# HockeyKE
+
+> HockeyKE provides fixtures, results, league tables and team statistics for Kenyan field hockey competitions.
+
+HockeyKE covers current and historical men's and women's competitions in Kenya. Competition and match pages are the canonical source for information published on HockeyKE.
+
+## Main pages
+
+- [Home](https://hockeyke.com/): Upcoming fixtures, latest results and current league tables.
+- [About HockeyKE](https://hockeyke.com/about): Platform purpose, coverage and correction policy.
+- [Contact HockeyKE](https://hockeyke.com/contact): Corrections and feedback.
+- [Privacy policy](https://hockeyke.com/privacy): Analytics, advertising and cookie information.
+
+## Men's competitions
+
+- [Premier League Men](https://hockeyke.com/league/men/premier-league)
+- [Super League Men](https://hockeyke.com/league/men/super-league)
+- [National League Men - Eastern Zone](https://hockeyke.com/league/men/national-league/eastern-zone)
+- [National League Men - Central Zone](https://hockeyke.com/league/men/national-league/central-zone)
+- [National League Men - Western Zone](https://hockeyke.com/league/men/national-league/western-zone)
+- [National League Men - Southern Zone](https://hockeyke.com/league/men/national-league/southern-zone)
+
+## Women's competitions
+
+- [Premier League Women](https://hockeyke.com/league/women/premier-league)
+- [Super League Women](https://hockeyke.com/league/women/super-league)
+
+## Contact
+
+- Email: hockeyke@gmail.com

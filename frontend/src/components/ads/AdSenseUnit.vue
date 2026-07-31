@@ -43,7 +43,7 @@ const isConfigured = computed(() => Boolean(clientId && slotId.value));
 
 const loadAdSenseScript = () => {
   const existingScript = document.querySelector<HTMLScriptElement>(
-    'script[data-hockeyke-adsense="true"]',
+    'script[src^="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]',
   );
 
   if (existingScript) {
@@ -54,7 +54,6 @@ const loadAdSenseScript = () => {
     const script = document.createElement("script");
     script.async = true;
     script.crossOrigin = "anonymous";
-    script.dataset.hockeykeAdsense = "true";
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(clientId)}`;
     script.addEventListener("load", () => resolve(), { once: true });
     script.addEventListener("error", () => reject(new Error("Unable to load AdSense.")), {

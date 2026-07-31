@@ -1,7 +1,10 @@
 <template>
   <AdminLayout>
     <div class="flex flex-col gap-8">
+      <h1 class="sr-only">Kenya Hockey Fixtures, Results and Standings</h1>
+
       <section class="order-3">
+        <h2 class="sr-only">Kenya Hockey League Tables</h2>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           <template
             v-for="competition in competitions"
@@ -12,9 +15,9 @@
             >
             <div>
               <div>
-                <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white">
                   {{ competition.name }}
-                </h2>
+                </h3>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   {{ competition.category }}
                 </p>
@@ -146,7 +149,7 @@
                 class="block py-4 transition hover:text-brand-500 focus:outline-hidden focus:ring-2 focus:ring-brand-500"
               >
                 <span class="block truncate text-center text-xs text-gray-500 dark:text-gray-400">
-                  {{ match.competition }}
+                  {{ match.competition }} · {{ match.gender }}
                 </span>
                 <span class="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                   <span class="truncate text-right text-sm font-semibold text-gray-900 dark:text-white">
@@ -169,12 +172,6 @@
               No upcoming fixtures are currently scheduled.
             </p>
 
-            <RouterLink
-              to="/fixtures"
-              class="mt-2 border-t border-gray-200 pt-4 text-sm font-semibold text-brand-500 hover:underline dark:border-gray-800"
-            >
-              View all fixtures →
-            </RouterLink>
           </article>
 
           <article
@@ -197,7 +194,7 @@
                 class="block py-4 transition hover:text-brand-500 focus:outline-hidden focus:ring-2 focus:ring-brand-500"
               >
                 <span class="block truncate text-center text-xs text-gray-500 dark:text-gray-400">
-                  {{ match.competition }}
+                  {{ match.competition }} · {{ match.gender }}
                 </span>
                 <span class="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                   <span
@@ -225,12 +222,6 @@
               No completed results are available.
             </p>
 
-            <RouterLink
-              to="/fixtures"
-              class="mt-2 border-t border-gray-200 pt-4 text-sm font-semibold text-brand-500 hover:underline dark:border-gray-800"
-            >
-              View all results →
-            </RouterLink>
           </article>
         </div>
       </section>
@@ -288,6 +279,7 @@ interface HomeMatch {
   venue: string;
   status: string;
   competition: string;
+  gender: string;
 }
 
 const competitions: Competition[] = [

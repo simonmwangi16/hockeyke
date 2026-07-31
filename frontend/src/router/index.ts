@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { trackMetaPageView, trackPageView } from '@/utils/analytics'
+import { applySeo } from '@/utils/seo'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +32,33 @@ const router = createRouter({
       component: () => import('../views/Pages/FixturesPage.vue'),
       meta: {
         title: 'Kenya Hockey Fixtures',
+      },
+    },
+
+    {
+      path: '/about',
+      name: 'About',
+      component: () => import('../views/Pages/AboutView.vue'),
+      meta: {
+        title: 'About HockeyKE',
+      },
+    },
+
+    {
+      path: '/contact',
+      name: 'Contact',
+      component: () => import('../views/Pages/ContactView.vue'),
+      meta: {
+        title: 'Contact HockeyKE',
+      },
+    },
+
+    {
+      path: '/privacy',
+      name: 'Privacy',
+      component: () => import('../views/Pages/PrivacyView.vue'),
+      meta: {
+        title: 'Privacy Policy',
       },
     },
 
@@ -193,6 +222,8 @@ const router = createRouter({
 
 export default router
 
+let isInitialNavigation = true
+
 const humanize = (value: string | string[] | undefined) => {
   const text = Array.isArray(value) ? value[0] : value
 
@@ -221,4 +252,12 @@ router.afterEach((to) => {
   }
 
   document.title = pageTitle === 'HockeyKE' ? pageTitle : `${pageTitle} | HockeyKE`
+  applySeo(to, document.title)
+  trackPageView(to.fullPath, document.title)
+
+  if (isInitialNavigation) {
+    isInitialNavigation = false
+  } else {
+    trackMetaPageView()
+  }
 })

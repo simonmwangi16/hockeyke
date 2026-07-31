@@ -79,6 +79,8 @@ class SettingsSelectionTests(SimpleTestCase):
             "DJANGO_DB_USER",
             "DJANGO_DB_PASSWORD",
             "DJANGO_DB_HOST",
+            "DJANGO_STATIC_ROOT",
+            "DJANGO_MEDIA_ROOT",
         ]:
             process_environment.pop(name, None)
         process_environment.update(environment)
@@ -152,6 +154,28 @@ class SettingsSelectionTests(SimpleTestCase):
                 "assert settings.ALLOWED_HOSTS == ['hockeyke.example']; "
                 "assert settings.SESSION_COOKIE_SECURE is True; "
                 "assert settings.DATABASES['default']['NAME'] == 'hockeyke'"
+            ),
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_production_accepts_explicit_static_and_media_roots(self):
+        environment = self.production_environment | {
+            "DJANGO_STATIC_ROOT": "/home/hockeyk1/api.example/static",
+            "DJANGO_MEDIA_ROOT": "/home/hockeyk1/api.example/media",
+        }
+
+        result = self.run_settings_import(
+            environment,
+            (
+                "from pathlib import Path; "
+                "from config import settings; "
+                "assert settings.STATIC_ROOT == "
+                "Path('/home/hockeyk1/api.example/static'); "
+                "assert settings.MEDIA_ROOT == "
+                "Path('/home/hockeyk1/api.example/media'); "
+                "assert settings.STATIC_URL == '/static/'; "
+                "assert settings.MEDIA_URL == '/media/'"
             ),
         )
 

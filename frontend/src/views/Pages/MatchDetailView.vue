@@ -9,6 +9,10 @@
     </div>
 
     <template v-else>
+      <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
+        {{ match.home_team }} vs {{ match.away_team }}
+      </h1>
+
       <!-- Overview Card -->
       <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800">

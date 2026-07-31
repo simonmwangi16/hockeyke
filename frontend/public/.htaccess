@@ -2,10 +2,44 @@ Options -MultiViews
 
 RewriteEngine On
 
+# Serve social preview images with crawler-compatible MIME types.
+<IfModule mod_mime.c>
+  AddType image/jpeg .jpg .jpeg
+  AddType image/png .png
+</IfModule>
+
+# This file can be inherited by subdomains whose document roots sit below
+# public_html. Never apply frontend redirects or SPA rewrites to the API host.
+RewriteCond %{HTTP_HOST} !^(www\.)?hockeyke\.com$ [NC]
+RewriteRule ^ - [L]
+
+# Use one canonical origin: HTTPS without the www subdomain.
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^hockeyke\.com$ [NC]
+RewriteRule ^ https://hockeyke.com%{REQUEST_URI} [R=301,L,NE]
+
+# Remove trailing slashes from application routes, while preserving the homepage.
+RewriteCond %{REQUEST_URI} !^/$
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+<IfModule mod_headers.c>
+  # Start with a short rollout window; increase only after every HTTPS host is verified.
+  Header always set Strict-Transport-Security "max-age=3600"
+  Header always set Content-Language "en"
+</IfModule>
+
+ErrorDocument 404 /404.html
+
 # Serve existing assets and directories normally.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Let Vue Router handle application URLs, including its 404 route.
-RewriteRule ^ index.html [L]
+# Send only known Vue routes to the SPA. Unknown direct URLs retain a real 404.
+RewriteRule ^$ index.html [L]
+RewriteRule ^league/(men|women)/(premier-league|super-league)$ index.html [L,NC]
+RewriteRule ^league/men/national-league/(eastern-zone|central-zone|western-zone|southern-zone)$ index.html [L,NC]
+RewriteRule ^match/[0-9]+/[a-z0-9-]+$ index.html [L,NC]
+RewriteRule ^teams/[0-9]+/[a-z0-9-]+(/(overview|table|fixtures|stats))?$ index.html [L,NC]
+RewriteRule ^(about|contact|privacy|fixtures|calendar|profile|form-elements|basic-tables|line-chart|bar-chart|alerts|avatars|badge|buttons|images|videos|blank|error-404|signin|signup)$ index.html [L,NC]

@@ -12,3 +12,10 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+interface Window {
+  dataLayer: unknown[];
+  fbq?: (...args: unknown[]) => void;
+  _fbq?: (...args: unknown[]) => void;
+  gtag?: (...args: unknown[]) => void;
+}

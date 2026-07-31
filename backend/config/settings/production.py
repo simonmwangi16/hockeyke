@@ -1,6 +1,7 @@
 """Production settings that reject incomplete security or database config."""
 
 import os
+from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -48,7 +49,9 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = Path(
+    os.environ.get("DJANGO_STATIC_ROOT", BASE_DIR / "staticfiles")
+)
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True

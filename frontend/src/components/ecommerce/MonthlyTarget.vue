@@ -133,7 +133,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import type { ApexOptions } from 'apexcharts'
 import DropdownMenu from '../common/DropdownMenu.vue'
 const menuItems = [
   { label: 'View More', onClick: () => console.log('View More clicked') },
@@ -150,7 +151,7 @@ const props = defineProps({
 
 const series = computed(() => [props.value])
 
-const chartOptions = {
+const chartOptions: ApexOptions = {
   colors: ['#465FFF'],
   chart: {
     fontFamily: 'Outfit, sans-serif',

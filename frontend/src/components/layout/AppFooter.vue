@@ -49,6 +49,30 @@
               Women
             </RouterLink>
           </li>
+          <li>
+            <RouterLink
+              class="text-gray-500 transition hover:text-brand-500 focus-visible:text-brand-500 dark:text-gray-400"
+              to="/about"
+            >
+              About
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink
+              class="text-gray-500 transition hover:text-brand-500 focus-visible:text-brand-500 dark:text-gray-400"
+              to="/contact"
+            >
+              Contact
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink
+              class="text-gray-500 transition hover:text-brand-500 focus-visible:text-brand-500 dark:text-gray-400"
+              to="/privacy"
+            >
+              Privacy
+            </RouterLink>
+          </li>
         </ul>
       </nav>
 
